@@ -1,0 +1,114 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Document</title>
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.1/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-+0n0xVW2eSR5OomGNYDnhzAbDsOXxcvSN1TPprVMTNDbiYZCxYbOOl7+AMvyTG2x" crossorigin="anonymous">
+  <link href="style.css" rel="stylesheet">
+
+</head>
+<body>
+  <header>
+    <nav class="navbar navbar-expand-lg navbar-light bg-light">
+      <div class="container-fluid">
+        <a class="navbar-brand" href="#">당금마켓</a>
+        <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+          <span class="navbar-toggler-icon"></span>
+        </button>
+        <div class="collapse navbar-collapse" id="navbarSupportedContent">
+          <ul class="navbar-nav me-auto mb-2 mb-lg-0">
+            <li class="nav-item">
+              <a class="nav-link active" aria-current="page" href="#">Home</a>
+            </li>
+            <li class="nav-item">
+              <a class="nav-link" href="#">Link</a>
+            </li>
+            <li class="nav-item">
+              <a class="nav-link disabled">Disabled</a>
+            </li>
+          </ul>
+          <form class="d-flex">
+            <input class="form-control me-2" type="search" placeholder="Search" aria-label="Search">
+            <button class="btn btn-outline-success" type="submit">Search</button>
+          </form>
+        </div>
+      </div>
+    </nav>
+  </header>
+  <section>
+    <div class="container mt-3">
+        <input type="text" class="form-control mt-2" id="title" placeholder="제목">
+        <textarea class="form-control mt-2" id="content" placeholder="상세설명"></textarea>
+        <input type="text" class="form-control mt-2" id="price" placeholder="가격">
+        <input class="form-control mt-2" type="file" id="image">
+        <button class="btn btn-success mt-3" id="send">올리기</button>
+    </div>          
+  </section>
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.1/dist/js/bootstrap.bundle.min.js" integrity="sha384-gtEjrD/SeCtmISkJkNUaaKMoLD0//ElJ19smozuHV6z3Iehds+3Ulb9Bn9Plx0x4" crossorigin="anonymous"></script>
+  <script src="https://code.jquery.com/jquery-3.6.0.min.js" integrity="sha256-/xUj+3OJU5yExlq6GSYGSHk7tPXikynS7ogEvDej/m4=" crossorigin="anonymous"></script>
+  
+  <script src="https://www.gstatic.com/firebasejs/8.6.5/firebase-app.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/8.6.5/firebase-auth.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/8.6.5/firebase-firestore.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/8.6.5/firebase-storage.js"></script>
+  <script>
+    const firebaseConfig = {
+      apiKey: "AIzaSyCUVAOk8Pp8pcC8cmaoZpTx7ny-ZxdqdAY",
+      authDomain: "carrotmarket-90133.firebaseapp.com",
+      databaseURL: "https://carrotmarket-90133-default-rtdb.asia-southeast1.firebasedatabase.app",
+      projectId: "carrotmarket-90133",
+      storageBucket: "carrotmarket-90133.appspot.com",
+      messagingSenderId: "618881874715",
+      appId: "1:618881874715:web:d5ae063dfc2035417971be",
+      measurementId: "G-KQ4L7DLN15"
+    };
+
+    firebase.initializeApp(firebaseConfig);
+  </script>
+  
+  <script>
+    const db = firebase.firestore()
+    const storage = firebase.storage()
+
+    $('#send').click(()=>{
+      let file = document.querySelector('#image').files[0]
+
+      let sotrageRef = storage.ref()
+      let path = sotrageRef.child('image/'+ file.name)
+      let upload = path.put(file)
+
+      upload.on( 'state_changed', 
+        // 변화시 동작하는 함수 
+        null, 
+        //에러시 동작하는 함수
+        (error) => {
+          console.error('실패사유는', error);
+        }, 
+        // 성공시 동작하는 함수
+        () => {
+          upload.snapshot.ref.getDownloadURL().then((url) => {
+            let data ={
+            제목 : $('#title').val(),
+            상세설명 : $('#content').val(),
+            가격 : $('#price').val(),
+            날짜: new Date(),
+            이미지 : url
+            }
+            db.collection('product').
+            add(data).then((res)=>{
+                console.log(res)
+                window.location.href = "/index.html"
+              }
+            ).catch((err)=>{
+              console.log(err)
+              }
+            )  
+          })
+        }
+      )
+    })
+  </script>
+</body>
+</html>
