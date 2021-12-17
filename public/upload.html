@@ -14,6 +14,7 @@
     <nav class="navbar navbar-expand-lg navbar-light bg-light">
       <div class="container-fluid">
         <a class="navbar-brand" href="#">당금마켓</a>
+        <span class="ms-auto mx-2">반갑습니다 <Span id="userName" ></Span>님</span>
         <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
           <span class="navbar-toggler-icon"></span>
         </button>
@@ -72,6 +73,13 @@
     const db = firebase.firestore()
     const storage = firebase.storage()
 
+    let user = localStorage.getItem('user')
+    if(user){
+      $('#userName').html(JSON.parse(user).displayName)
+    } else {
+      $('#userName').html('Guest')
+    }
+
     $('#send').click(()=>{
       let file = document.querySelector('#image').files[0]
 
@@ -90,11 +98,13 @@
         () => {
           upload.snapshot.ref.getDownloadURL().then((url) => {
             let data ={
-            제목 : $('#title').val(),
-            상세설명 : $('#content').val(),
-            가격 : $('#price').val(),
-            날짜: new Date(),
-            이미지 : url
+              제목 : $('#title').val(),
+              상세설명 : $('#content').val(),
+              가격 : $('#price').val(),
+              날짜: new Date(),
+              이미지 : url,
+              uid : JSON.parse(localStorage.getItem('user')).uid,
+              이름 : JSON.parse(localStorage.getItem('user')).displayName
             }
             db.collection('product').
             add(data).then((res)=>{

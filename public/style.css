@@ -21,3 +21,12 @@
   color: grey;
   font-size: 13px;
 }
+
+.detail-pic {
+  height: 300px;
+  width: 100%;
+  background-position: center;
+  background-size: cover;
+  background-color: darkgrey;
+  border-radius: 10px;
+}
