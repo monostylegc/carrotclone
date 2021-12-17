@@ -40,7 +40,7 @@
   </header>
   <section>
     <div class="container mt-3">
-        <div style="display: flex;">상세페이지<button class="btn btn-primary ms-auto" id="edit">수정</button>
+        <div style="display: flex;">상세페이지<button class="btn btn-primary ms-auto" id="edit" style="display: none;">수정</button>
         </div>
         <div class="detail-title">
             <h2 id="title"></h2>
@@ -98,8 +98,11 @@
       $('#content').html(result.data().상세설명)
       $('#price').html(result.data().가격)
       $('.detail-pic').css("background-image", `url('${result.data().이미지}')`)
+      if(result.data().uid === JSON.parse(localStorage.getItem('user')).uid){
+        $('#edit').css('display','flex')
+      }
     })
-
+    
     $('#edit').click(()=>{
       window.location.href = `/edit.html?id=${querystring.get('id')}`
     })

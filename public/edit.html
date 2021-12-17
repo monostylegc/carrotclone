@@ -84,7 +84,6 @@
 
     db.collection('product').doc(querystring.get('id')).get()
     .then((res)=>{
-        console.log(res.data())
         $('#title').val(res.data().제목)  
         $('#content').val(res.data().상세설명) 
         $('#price').val(res.data().가격) 
@@ -94,15 +93,17 @@
     })
 
     $('#send').click(()=>{
-        db.collection('product').doc(querystring.get('id')).update(
-            {
-                제목 : $('#title').val(),  
-                상세설명 : $('#content').val(),
-                가격 : $('#price').val()        
-            }
-        ).then(
-            window.location.href = "/"
-        ).catch((err)=>{console.log(err)})
+      
+      let 바꿀거 = {
+        제목 : $('#title').val(),  
+        상세설명: $('#content').val(),
+        가격: $('#price').val()   
+      }
+      console.log(바꿀거)
+      db.collection('product').doc(querystring.get('id'))
+      .update(바꿀거)
+      .then(window.location.href = "/")
+      .catch((err)=>{console.log(err)})  
     })
   </script>
 </body>
